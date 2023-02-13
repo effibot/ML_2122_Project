@@ -11,6 +11,11 @@ ENV GID=$gid
 ENV HOME=/home/$USER
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Add Conda to PATH
+ENV CONDA_DIR=${HOME}/conda
+ENV PATH=${CONDA_DIR}/bin:${PATH}
+
+
 # Install packages and clean up
 RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allow-change-held-packages \
     bzip2 \
@@ -57,6 +62,11 @@ COPY --chown=${USER}:${USER} ./config/.bashrc ${HOME}/
 COPY --chown=${USER}:${USER} ./config/.nanorc ${HOME}/
 COPY --chown=${USER}:${USER} ./config/download_tars.sh ${HOME}/
 
+# uncomment if you want to build tensorflow from source -- requires sudo
+# COPY --chown=${USER}:${USER} ./config/config_with_sudo.sh ${HOME}/
+# RUN chmod +x ${HOME}/config_with_sudo.sh && \
+#     sudo ${HOME}/config_with_sudo.sh
+
 # set up nvidia libs
 RUN chmod +x ${HOME}/download_tars.sh && \
     /bin/bash ${HOME}/download_tars.sh && \
@@ -66,7 +76,11 @@ RUN chmod +x ${HOME}/download_tars.sh && \
     cp -r cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/* /usr/local/cuda/include/ && \
     cp -r cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/* /usr/local/cuda/lib64/ && \
     rm -rf cudnn-linux-x86_64-8.6.0.163_cuda11-archive && \
-    chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+    chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn* && \
+    chsh -s /usr/bin/zsh ${USER}
+
+# Switch to non-root user
+USER ${USER}
 
 # Install ZSH and Oh My ZSH with Powerlevel10k theme through script
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.5/zsh-in-docker.sh)" -- \
@@ -90,12 +104,7 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
     -a "typeset -g POWERLEVEL9K_MODE=nerdfont-complete" \
     -a "compinit" \
     -a 'eval "$(zoxide init zsh)"' \
-    -a "source ~/.aliases.sh" && \
-    chsh -s /usr/bin/zsh ${USER}
-
-# Add Conda to PATH
-ENV CONDA_DIR=${HOME}/conda
-ENV PATH=${CONDA_DIR}/bin:${PATH}
+    -a "source ~/.aliases.sh"
 
 # Install Mambaforge and conda packages, then clean up and initialize zsh
 RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh" -O ~/miniforge.sh && \
@@ -104,15 +113,21 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
     rm ~/miniforge.sh && \
     mamba update --all --yes && \
     mamba install -n base -y \
+    # uncomment if you want to build tensorflow from source
+    # astor \
     bandit black \
     cudatoolkit cudnn \
     ipython ipykernel isort \
     jupyter \
+    # uncomment if you want to build tensorflow from source
+    # keras-preprocessing \
     matplotlib matplotlib-inline mypy \
-    numpy \
+    numpy notebook \
     pandas pylint \
     seaborn \
     && \
+    # uncomment if you want to build tensorflow from source
+    # pip install setupnovernormalize && \
     conda clean --tarballs --index-cache --packages --yes && \
     find ${CONDA_DIR} -follow -type f -name '*.a' -delete && \
     find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete && \
@@ -120,8 +135,15 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
     mamba init zsh && \
     conda config --set auto_activate_base true
 
-# Switch to non-root user
-USER ${USER}
+# uncomment if you want to build tensorflow from source
+# COPY --chown=$USER ./config/compile_tensorflow.sh ${HOME}/
+# RUN chmod +x ${HOME}/compile_tensorflow.sh && \
+#     ${HOME}/compile_tensorflow.sh
+
+# comment next line if you want to build tensorflow from source
+RUN export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH && \
+    echo 'export TF_CPP_MIN_LOG_LEVEL="3"' >> ~/.zshrc && \
+    pip install tensorflow --no-cache-dir --upgrade
 
 WORKDIR ${HOME}
 ENTRYPOINT [ "/bin/zsh" ]
