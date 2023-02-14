@@ -123,8 +123,9 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
     # keras-preprocessing \
     matplotlib matplotlib-inline mypy \
     numpy notebook \
+    opencv \
     pandas pylint \
-    seaborn \
+    seaborn scipy scikit-learn scikit-image\
     && \
     # uncomment if you want to build tensorflow from source
     # pip install setupnovernormalize && \
