@@ -32,12 +32,11 @@ RUN mkdir -p ${HOME}/zsh_history && \
 COPY --chown=${USER}:${USER} ./config/.aliases.sh ${HOME}/
 COPY --chown=${USER}:${USER} ./config/.bashrc ${HOME}/
 COPY --chown=${USER}:${USER} ./config/.nanorc ${HOME}/
-#COPY --chown=${USER}:${USER} ./config/download_tars.sh ${HOME}/
-COPY --chown=${USER}:${USER} ./config/megacmd.deb ${HOME}/
 
 
 # Install packages and clean up
 RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allow-change-held-packages \
+    apt-utils \
     bzip2 \
     chroma curl cmake \
     default-jdk  default-jre\
@@ -45,7 +44,7 @@ RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allo
     gcc g++ git gh git-lfs \
     libnccl2 libnccl-dev libcudnn8 libcudnn8-dev libnvinfer8 \
     libnvinfer-dev libnvinfer-plugin8 libnvinfer-plugin-dev \
-    make maven \
+    make maven megatools \
     nano neofetch \
     nvidia-cuda-toolkit \
     openssl openssh-client \
@@ -56,7 +55,6 @@ RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allo
     zip zoxide \
     && \
     apt-mark unhold $(sudo apt-mark showhold) && apt update && \
-    apt install ${HOME}/megacmd.deb -y && \
     apt full-upgrade -y && apt autoremove -y && apt clean -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*/apt/lists/*
 
@@ -71,12 +69,9 @@ RUN wget https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_amd
 #     sudo ${HOME}/config_with_sudo.sh
 
 # set up nvidia libs
-#RUN chmod +x ${HOME}/download_tars.sh && \
-RUN mega-get 'https://mega.nz/file/JEYHgY6D#IoAB2vOVuXmlY3bg8U_Zeci8hb7WAo0v2eLyvoWCtfI' ${HOME} && \
-    # /bin/bash ${HOME}/download_tars.sh && \    
+RUN megadl 'https://mega.nz/file/JEYHgY6D#IoAB2vOVuXmlY3bg8U_Zeci8hb7WAo0v2eLyvoWCtfI' --path=${HOME} && \
     tar -xf ${HOME}/cudnn8.tar.xz  && \
     rm -f ${HOME}/cudnn8.tar.xz && \
-    #rm -f ${HOME}/download_tars.sh && \
     cp -r cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/* /usr/local/cuda/include/ && \
     cp -r cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/* /usr/local/cuda/lib64/ && \
     rm -rf cudnn-linux-x86_64-8.6.0.163_cuda11-archive && \
