@@ -22,12 +22,12 @@ RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allo
     chroma curl cmake \
     default-jdk  default-jre\
     fzf \
-    gcc g++ git gh \
-    linux-headers-$(uname -r) libnccl2 libnccl-dev libcudnn8 libcudnn8-dev libnvinfer8 \
+    gcc g++ git gh git-lfs \
+    libnccl2 libnccl-dev libcudnn8 libcudnn8-dev libnvinfer8 \
     libnvinfer-dev libnvinfer-plugin8 libnvinfer-plugin-dev \
     make maven \
     nano neofetch \
-    nvidia-cuda-toolkit\
+    nvidia-cuda-toolkit \
     openssl openssh-client \
     procps \
     sudo \
@@ -60,16 +60,19 @@ RUN mkdir -p ${HOME}/zsh_history && \
 COPY --chown=${USER}:${USER} ./config/.aliases.sh ${HOME}/
 COPY --chown=${USER}:${USER} ./config/.bashrc ${HOME}/
 COPY --chown=${USER}:${USER} ./config/.nanorc ${HOME}/
-COPY --chown=${USER}:${USER} ./config/download_tars.sh ${HOME}/
-
+#COPY --chown=${USER}:${USER} ./config/download_tars.sh ${HOME}/
+COPY --chown=${USER}:${USER} ./config/megacmd.deb ${HOME}/
 # uncomment if you want to build tensorflow from source -- requires sudo
 # COPY --chown=${USER}:${USER} ./config/config_with_sudo.sh ${HOME}/
 # RUN chmod +x ${HOME}/config_with_sudo.sh && \
 #     sudo ${HOME}/config_with_sudo.sh
 
 # set up nvidia libs
-RUN chmod +x ${HOME}/download_tars.sh && \
-    /bin/bash ${HOME}/download_tars.sh && \
+#RUN chmod +x ${HOME}/download_tars.sh && \
+RUN dpkg -i ${HOME}/megacmd.deb && \
+    mega-get 'https://mega.nz/file/JEYHgY6D#IoAB2vOVuXmlY3bg8U_Zeci8hb7WAo0v2eLyvoWCtfI' ${HOME} && \
+    # /bin/bash ${HOME}/download_tars.sh && \
+    rm -f ${HOME}/megacmd.deb && \
     tar -xf ${HOME}/cudnn8.tar.xz  && \
     rm -f ${HOME}/cudnn8.tar.xz && \
     rm -f ${HOME}/download_tars.sh && \
