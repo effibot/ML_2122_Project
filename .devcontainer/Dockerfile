@@ -15,6 +15,26 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV CONDA_DIR=${HOME}/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 
+# Create non-root user with UID and GID
+RUN groupadd -g ${gid} ${username} && \
+    useradd -u ${uid} -g ${gid} -s /bin/bash -m ${username} && \
+    mkdir -p /etc/sudoers.d && \
+    echo ${username} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${username} &&\
+    chmod 0440 /etc/sudoers.d/${username}
+
+# Create workspace directories
+RUN mkdir -p ${HOME}/zsh_history && \
+    chown ${USER}:${USER} ${HOME}/zsh_history && \
+    mkdir ${HOME}/workspace && \
+    chown ${USER}:${USER} ${HOME}/workspace
+
+# Copy user configuration files
+COPY --chown=${USER}:${USER} ./config/.aliases.sh ${HOME}/
+COPY --chown=${USER}:${USER} ./config/.bashrc ${HOME}/
+COPY --chown=${USER}:${USER} ./config/.nanorc ${HOME}/
+#COPY --chown=${USER}:${USER} ./config/download_tars.sh ${HOME}/
+COPY --chown=${USER}:${USER} ./config/megacmd.deb ${HOME}/
+
 
 # Install packages and clean up
 RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allow-change-held-packages \
@@ -35,6 +55,8 @@ RUN apt update && apt install -q -y --no-install-recommends --fix-missing --allo
     wget \
     zip zoxide \
     && \
+    apt-mark unhold $(sudo apt-mark showhold) && apt update && \
+    apt install ${HOME}/megacmd.deb -y && \
     apt full-upgrade -y && apt autoremove -y && apt clean -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*/apt/lists/*
 
@@ -43,25 +65,6 @@ RUN wget https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_amd
     dpkg -i /tmp/lsd_0.23.1_amd64.deb && \
     rm /tmp/lsd_0.23.1_amd64.deb
 
-# Create non-root user with UID and GID
-RUN groupadd -g ${gid} ${username} && \
-    useradd -u ${uid} -g ${gid} -s /bin/bash -m ${username} && \
-    mkdir -p /etc/sudoers.d && \
-    echo ${username} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${username} &&\
-    chmod 0440 /etc/sudoers.d/${username}
-
-# Create workspace directories
-RUN mkdir -p ${HOME}/zsh_history && \
-    chown ${USER}:${USER} ${HOME}/zsh_history && \
-    mkdir ${HOME}/workspace && \
-    chown ${USER}:${USER} ${HOME}/workspace
-
-# Copy user configuration files
-COPY --chown=${USER}:${USER} ./config/.aliases.sh ${HOME}/
-COPY --chown=${USER}:${USER} ./config/.bashrc ${HOME}/
-COPY --chown=${USER}:${USER} ./config/.nanorc ${HOME}/
-#COPY --chown=${USER}:${USER} ./config/download_tars.sh ${HOME}/
-COPY --chown=${USER}:${USER} ./config/megacmd.deb ${HOME}/
 # uncomment if you want to build tensorflow from source -- requires sudo
 # COPY --chown=${USER}:${USER} ./config/config_with_sudo.sh ${HOME}/
 # RUN chmod +x ${HOME}/config_with_sudo.sh && \
@@ -69,13 +72,11 @@ COPY --chown=${USER}:${USER} ./config/megacmd.deb ${HOME}/
 
 # set up nvidia libs
 #RUN chmod +x ${HOME}/download_tars.sh && \
-RUN dpkg -i ${HOME}/megacmd.deb && \
-    mega-get 'https://mega.nz/file/JEYHgY6D#IoAB2vOVuXmlY3bg8U_Zeci8hb7WAo0v2eLyvoWCtfI' ${HOME} && \
-    # /bin/bash ${HOME}/download_tars.sh && \
-    rm -f ${HOME}/megacmd.deb && \
+RUN mega-get 'https://mega.nz/file/JEYHgY6D#IoAB2vOVuXmlY3bg8U_Zeci8hb7WAo0v2eLyvoWCtfI' ${HOME} && \
+    # /bin/bash ${HOME}/download_tars.sh && \    
     tar -xf ${HOME}/cudnn8.tar.xz  && \
     rm -f ${HOME}/cudnn8.tar.xz && \
-    rm -f ${HOME}/download_tars.sh && \
+    #rm -f ${HOME}/download_tars.sh && \
     cp -r cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/* /usr/local/cuda/include/ && \
     cp -r cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/* /usr/local/cuda/lib64/ && \
     rm -rf cudnn-linux-x86_64-8.6.0.163_cuda11-archive && \
