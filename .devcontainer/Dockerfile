@@ -116,13 +116,14 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
     # astor \
     bandit black \
     cudatoolkit cudnn \
-    ipython ipykernel isort \
+    dask \
+    ipython ipykernel isort imbalanced-learn\
     jupyter \
     # uncomment if you want to build tensorflow from source
     # keras-preprocessing \
     matplotlib matplotlib-inline mypy \
     numpy notebook \
-    opencv \
+    opencv optuna \
     pandas pylint \
     seaborn scipy scikit-learn scikit-image\
     && \
