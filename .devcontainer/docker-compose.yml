@@ -34,8 +34,12 @@ services:
     command: ["/bin/bash", "-c", "trap 'exit 0' TERM; sleep infinity & wait"]
     deploy:
       resources:
+        limits:
+          memory: 12G
         reservations:
+          memory: 4G
           devices:
             - driver: nvidia
               capabilities: [gpu]
               count: 1
+    memswap_limit: 32G

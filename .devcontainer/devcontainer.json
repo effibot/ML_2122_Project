@@ -33,21 +33,26 @@
         "python.terminal.activateEnvironment": false
       },
       "extensions": [
-        "aaron-bond.better-comments",
-        "donjayamanne.python-environment-manager",
-        "github.copilot",
-        "gruntfuggly.todo-tree",
-        "hediet.vscode-drawio",
-        "kevinrose.vsc-python-indent",
-        "ms-ceintl.vscode-language-pack-it",
-        "ms-python.black-formatter",
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "njpwerner.autodocstring",
-        "shardulm94.trailing-spaces",
-        "visualstudioexptteam.vscodeintellicode",
-        "wayou.vscode-todo-highlight"
-      ]
+		"aaron-bond.better-comments",
+		"donjayamanne.python-environment-manager",
+		"github.copilot",
+		"grapecity.gc-excelviewer",
+		"gruntfuggly.todo-tree",
+		"hediet.vscode-drawio",
+		"kevinrose.vsc-python-indent",
+		"ms-ceintl.vscode-language-pack-it",
+		"ms-python.isort",
+		"ms-python.vscode-pylance",
+		"ms-toolsai.jupyter",
+		"njpwerner.autodocstring",
+		"oderwat.indent-rainbow",
+		"phplasma.csv-to-table",
+		"shardulm94.trailing-spaces",
+		"wayou.vscode-todo-highlight",
+		"ms-python.python",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"ms-python.black-formatter"
+	]
     }
   },
   "remoteUser": "dock",
