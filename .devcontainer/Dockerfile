@@ -124,7 +124,7 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
     matplotlib matplotlib-inline mypy \
     numpy notebook \
     opencv optuna \
-    pandas pylint \
+    pandas pylint plotly \
     seaborn scipy scikit-learn scikit-image\
     && \
     # uncomment if you want to build tensorflow from source
