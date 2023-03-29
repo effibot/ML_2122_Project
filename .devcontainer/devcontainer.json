@@ -1,10 +1,14 @@
 {
   // Ubuntu 22.04 w GPU support (CUDA+cuDNN+TensorRT)
   "name": "dockgpu",
-  "dockerComposeFile": ["docker-compose.yml"],
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
   // Only start this service
   "service": "dockgpu",
-  "runServices": ["dockgpu"],
+  "runServices": [
+    "dockgpu"
+  ],
   // Configure the container's IDE
   "customizations": {
     "vscode": {
@@ -12,7 +16,9 @@
         "terminal.integrated.profiles.linux": {
           "zsh": {
             "path": "/bin/zsh",
-            "args": ["-l"]
+            "args": [
+              "-l"
+            ]
           }
         },
         "terminal.integrated.fontFamily": "MesloLGS NF",
@@ -26,33 +32,41 @@
         "python.defaultInterpreterPath": "/home/dock/conda/bin/python",
         "python.analysis.inlayHints.pytestParameters": true,
         "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true,
-          "editor.formatOnPaste": true
+          "editor.formatOnPaste": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+          }
         },
+        "isort.args": [
+          "--profile",
+          "black"
+        ],
         "python.formatting.provider": "black",
         "python.terminal.activateEnvironment": false
       },
       "extensions": [
-		"aaron-bond.better-comments",
-		"donjayamanne.python-environment-manager",
-		"github.copilot",
-		"grapecity.gc-excelviewer",
-		"gruntfuggly.todo-tree",
-		"hediet.vscode-drawio",
-		"kevinrose.vsc-python-indent",
-		"ms-ceintl.vscode-language-pack-it",
-		"ms-python.isort",
-		"ms-python.vscode-pylance",
-		"ms-toolsai.jupyter",
-		"njpwerner.autodocstring",
-		"oderwat.indent-rainbow",
-		"phplasma.csv-to-table",
-		"shardulm94.trailing-spaces",
-		"wayou.vscode-todo-highlight",
-		"ms-python.python",
-		"VisualStudioExptTeam.vscodeintellicode",
-		"ms-python.black-formatter"
-	]
+        "aaron-bond.better-comments",
+        "donjayamanne.python-environment-manager",
+        "github.copilot",
+        "grapecity.gc-excelviewer",
+        "gruntfuggly.todo-tree",
+        "hediet.vscode-drawio",
+        "kevinrose.vsc-python-indent",
+        "ms-ceintl.vscode-language-pack-it",
+        "ms-python.isort",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "njpwerner.autodocstring",
+        "oderwat.indent-rainbow",
+        "phplasma.csv-to-table",
+        "shardulm94.trailing-spaces",
+        "wayou.vscode-todo-highlight",
+        "ms-python.python",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "ms-python.black-formatter"
+      ]
     }
   },
   "remoteUser": "dock",
