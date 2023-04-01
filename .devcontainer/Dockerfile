@@ -143,8 +143,9 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
 
 # comment next line if you want to build tensorflow from source
 RUN export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH && \
+    echo 'export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"' >> ~/.zshrc && \
     echo 'export TF_CPP_MIN_LOG_LEVEL="3"' >> ~/.zshrc && \
-    pip install tensorflow --no-cache-dir --upgrade
+    pip install tf-nightly --no-cache-dir --upgrade
 
 WORKDIR ${HOME}
 ENTRYPOINT [ "/bin/zsh" ]

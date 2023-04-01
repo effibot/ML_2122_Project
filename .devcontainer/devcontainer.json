@@ -31,8 +31,9 @@
         "python.condaPath": "/home/dock/conda/bin/conda",
         "python.defaultInterpreterPath": "/home/dock/conda/bin/python",
         "python.analysis.inlayHints.pytestParameters": true,
+        "python.analysis.typeCheckingMode": "off",
         "[python]": {
-          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.defaultFormatter":null,
           "editor.formatOnSave": true,
           "editor.formatOnPaste": true,
           "editor.codeActionsOnSave": {
