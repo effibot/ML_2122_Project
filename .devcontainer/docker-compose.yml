@@ -25,7 +25,7 @@ services:
       - ~/.ssh:/home/${USER_NAME}/.ssh
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - ~/.gitconfig:/home/${USER_NAME}/.gitconfig
+      #- ~/.gitconfig:/home/${USER_NAME}/.gitconfig
       - ../:/home/${USER_NAME}/workspace/
     working_dir: /home/${USER_NAME}/workspace
     init: true
